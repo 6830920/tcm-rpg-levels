@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光明中医 RPG - 游戏化学习系统</title>
+    <link rel="stylesheet" href="css/rpg-style.css">
+    <link rel="stylesheet" href="css/enhanced-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container" id="gameContainer">
+        <!-- 启动界面 -->
+        <div class="screen start-screen" id="startScreen">
+            <div class="title-section">
+                <h1 class="game-title">🏮 光明中医 RPG</h1>
+                <p class="game-subtitle">由浅入深，探索中医奥秘</p>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="menu-btn primary" id="newGameBtn">开始新的旅程</button>
+                <button class="menu-btn" id="continueBtn">继续游戏</button>
+                <button class="menu-btn" id="settingsBtn">设置</button>
+            </div>
+
+            <div class="scrolling-text">
+                <p>在遥远的古代，光明中医传承者守护着中医的智慧...</p>
+                <p>但阴阳失衡之兽威胁着世间...</p>
+                <p>只有真正的中医传承者，才能击败它...</p>
+                <p>你是那个传承者吗？</p>
+            </div>
+        </div>
+
+        <!-- 角色创建界面 -->
+        <div class="screen character-create-screen" id="characterCreateScreen" style="display: none;">
+            <div class="title-section">
+                <h2 class="screen-title">✨ 创建你的角色</h2>
+            </div>
+
+            <div class="character-form">
+                <div class="form-group">
+                    <label>角色姓名</label>
+                    <input type="text" id="characterName" placeholder="输入你的名字" value="中医学徒">
+                </div>
+
+                <div class="form-group">
+                    <label>选择职业</label>
+                    <div class="profession-grid">
+                        <div class="profession-card selected" data-profession="weiqi">
+                            <div class="profession-icon">🛡️</div>
+                            <h3>卫气守护者</h3>
+                            <p class="profession-desc">防御职业，擅长保护身体、抵御外邪</p>
+                            <ul class="profession-traits">
+                                <li>⭐ 防御力强</li>
+                                <li>⭐ 体质健康</li>
+                                <li>⭐ 温煦能力</li>
+                            </ul>
+                        </div>
+
+                        <div class="profession-card" data-profession="yingqi">
+                            <div class="profession-icon">🩺</div>
+                            <h3>营气调理师</h3>
+                            <p class="profession-desc">辅助职业，擅长调理身体、营养输送</p>
+                            <ul class="profession-traits">
+                                <li>⭐ 恢复力强</li>
+                                <li>⭐ 营养能力强</li>
+                                <li>⭐ 调理能力</li>
+                            </ul>
+                        </div>
+
+                        <div class="profession-card" data-profession="yuanqi">
+                            <div class="profession-icon">🔥</div>
+                            <h3>元气修炼者</h3>
+                            <p class="profession-desc">战斗职业，擅长强力治疗、恢复元气</p>
+                            <ul class="profession-traits">
+                                <li>⭐ 攻击力强</li>
+                                <li>⭐ 元气充足</li>
+                                <li>⭐ 治愈能力</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>选择头像</label>
+                    <div class="avatar-grid">
+                        <div class="avatar-option selected" data-avatar="1">👨‍🎓</div>
+                        <div class="avatar-option" data-avatar="2">👩‍🎓</div>
+                        <div class="avatar-option" data-avatar="3">👨‍⚕️</div>
+                        <div class="avatar-option" data-avatar="4">👩‍⚕️</div>
+                        <div class="avatar-option" data-avatar="5">🧔</div>
+                        <div class="avatar-option" data-avatar="6">🧕</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screen-actions">
+                <button class="btn secondary" id="backToStart">返回</button>
+                <button class="btn primary" id="startAdventureBtn">开始冒险</button>
+            </div>
+        </div>
+
+        <!-- 关卡选择界面 -->
+        <div class="screen level-select-screen" id="levelSelectScreen" style="display: none;">
+            <div class="title-section">
+                <h2 class="screen-title">📜 选择关卡</h2>
+            </div>
+
+            <div class="level-list" id="levelList">
+                <!-- 关卡列表动态生成 -->
+            </div>
+
+            <div class="screen-actions">
+                <button class="btn secondary" id="backToMenuBtn">返回主菜单</button>
+            </div>
+        </div>
+
+        <!-- 关卡介绍界面 -->
+        <div class="screen level-intro-screen" id="levelIntroScreen" style="display: none;">
+            <div class="level-intro-content">
+                <div class="level-intro-header">
+                    <h2 id="levelTitle">第一章 - 阴阳平衡</h2>
+                    <h3 id="levelName">阴阳之谷</h3>
+                </div>
+
+                <div class="npc-info-intro">
+                    <div class="npc-avatar-large" id="levelNpcAvatar">👴</div>
+                    <div class="npc-info-text">
+                        <h4 id="levelNpcName">阴阳长老</h4>
+                        <p id="levelNpcIntro">年轻人，欢迎来到阴阳之谷。</p>
+                    </div>
+                </div>
+
+                <div class="level-info">
+                    <div class="info-row">
+                        <span class="info-label">描述：</span>
+                        <span id="levelDescription">学习阴阳的基本概念和属性</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">难度：</span>
+                        <span id="levelDifficulty">入门</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">预计时间：</span>
+                        <span id="levelEstTime">15 分钟</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screen-actions">
+                <button class="btn secondary" onclick="showScreen('level-select')">返回</button>
+                <button class="btn primary" id="startLearningBtn">开始学习</button>
+            </div>
+        </div>
+
+        <!-- 学习界面 -->
+        <div class="screen learning-screen" id="learningScreen" style="display: none;">
+            <div class="learning-content">
+                <div class="learning-header">
+                    <h2 id="learningTitle">阴阳基本概念</h2>
+                    <h3 id="sectionTitle">什么是阴阳平衡</h3>
+                </div>
+
+                <div class="learning-text">
+                    <p id="sectionContent">阴阳平衡是指事物为了正常运转，在指标上保持合适的度...</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>📌 重点</h4>
+                    <ul id="keyPoints">
+                        <li>平衡：指标在合适范围内，事物正常运转</li>
+                        <li>失衡：指标超出正常范围，事物运转失常</li>
+                    </ul>
+                </div>
+
+                <div class="example-box" id="exampleBox" style="display: none;">
+                    <h4>💡 示例</h4>
+                    <div class="example-scenario" id="exampleScenario">房间温度控制</div>
+                    <div class="example-content" id="exampleContent"></div>
+                </div>
+
+                <div class="learning-progress">
+                    <div class="progress-label">学习进度</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="learningProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text" id="learningProgressText">0%</div>
+                </div>
+            </div>
+
+            <div class="screen-actions">
+                <button class="btn primary" id="nextSectionBtn">继续</button>
+            </div>
+        </div>
+
+        <!-- 测验界面 -->
+        <div class="screen quiz-screen" id="quizScreen" style="display: none;">
+            <div class="quiz-content">
+                <div class="quiz-header">
+                    <h2 id="quizTitle">阴阳概念测验</h2>
+                    <div class="question-counter" id="questionNumber">第 1 / 4 题</div>
+                </div>
+
+                <div class="quiz-question">
+                    <p id="questionText">以下哪个描述正确说明了'阴阳平衡'的含义？</p>
+                </div>
+
+                <div class="quiz-options" id="questionOptions">
+                    <button class="quiz-option">A. 阴和阳必须相等</button>
+                    <button class="quiz-option">B. 指标保持在合适的范围内，使事物正常运转</button>
+                    <button class="quiz-option">C. 阴永远多于阳</button>
+                    <button class="quiz-option">D. 阳永远多于阴</button>
+                </div>
+
+                <div class="answer-explanation" id="answerExplanation" style="display: none;">
+                    <p>阴阳平衡是指事物为了正常运转，在指标上保持合适的度，不是简单的相等关系。</p>
+                </div>
+
+                <div class="quiz-progress">
+                    <button class="btn primary" id="nextQuestionBtn" style="display: none;">下一题</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测验结果界面 -->
+        <div class="screen quiz-result-screen" id="quizResultScreen" style="display: none;">
+            <div class="quiz-result-content">
+                <div class="result-icon">📊</div>
+                <h2>测验完成</h2>
+                <div class="result-score">
+                    <span id="quizScore">3</span> / <span id="quizTotal">4</span>
+                </div>
+                <div class="result-percent" id="quizPercent">75%</div>
+                <div class="result-status" id="quizResult">未通过</div>
+
+                <div class="result-actions">
+                    <button class="btn primary" id="retryQuizBtn" style="display: none;">重新测验</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 应用练习界面 -->
+        <div class="screen application-screen" id="applicationScreen" style="display: none;">
+            <div class="application-content">
+                <div class="app-header">
+                    <h2 id="applicationTitle">阴阳属性判断练习</h2>
+                    <p id="applicationDesc">根据给定的场景，判断事物的阴阳属性。</p>
+                </div>
+
+                <div class="app-case">
+                    <div class="case-scenario" id="caseScenario">
+                        人体体温平衡点约为37度。如果一个人发烧到39度，这属于什么？
+                    </div>
+
+                    <div class="case-choices" id="caseChoices">
+                        <button class="app-choice">A. 阴</button>
+                        <button class="app-choice">B. 阳</button>
+                        <button class="app-choice">C. 既不阴也不阳</button>
+                    </div>
+
+                    <div class="case-explanation" id="caseExplanation">
+                        39度高于37度的平衡点，属阳，表现为热。
+                    </div>
+
+                    <div class="app-actions">
+                        <button class="btn primary" id="nextCaseBtn" style="display: none;">下一题</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 战斗界面 -->
+        <div class="screen battle-screen" id="battleScreen" style="display: none;">
+            <div class="battle-scene">
+                <div class="enemy-side">
+                    <div class="enemy-avatar" id="enemyAvatar">👾</div>
+                    <div class="enemy-info">
+                        <h3 class="enemy-name" id="enemyName">失衡之兽</h3>
+                        <div class="enemy-hp-bar">
+                            <div class="hp-bar-container">
+                                <div class="hp-bar enemy-hp" id="enemyHPBar" style="width: 100%"></div>
+                            </div>
+                            <span class="hp-text" id="enemyHPText">1000/1000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="battle-vs">VS</div>
+
+                <div class="player-side">
+                    <div class="player-avatar-battle" id="playerAvatarBattle">👨‍🎓</div>
+                    <div class="player-info-battle">
+                        <h3 class="player-name-battle" id="playerNameBattle">中医学徒</h3>
+                        <div class="player-hp-bar">
+                            <div class="hp-bar-container">
+                                <div class="hp-bar player-hp" id="playerHPBar" style="width: 100%"></div>
+                            </div>
+                            <span class="hp-text" id="playerHPText">100/100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="battle-log" id="battleLog">
+                <!-- 战斗日志 -->
+            </div>
+
+            <div class="battle-actions">
+                <div class="action-buttons" id="actionButtons">
+                    <button class="action-btn" data-action="attack">⚔️ 攻击</button>
+                    <button class="action-btn" data-action="skill">⚡ 技能</button>
+                    <button class="action-btn" data-action="heal">💊 治疗</button>
+                    <button class="action-btn" data-action="defend">🛡️ 防御</button>
+                </div>
+                <div class="skill-panel" id="skillPanel" style="display: none;">
+                    <h4>技能</h4>
+                    <div class="skill-list" id="skillList">
+                        <!-- 技能列表动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 胜利界面 -->
+        <div class="screen victory-screen" id="victoryScreen" style="display: none;">
+            <div class="victory-content">
+                <div class="victory-icon">🎉</div>
+                <h1>胜利！</h1>
+                <p id="victoryMessage">你成功击败了失衡之兽！</p>
+
+                <div class="rewards">
+                    <h3>奖励</h3>
+                    <div class="reward-items">
+                        <div class="reward-item">
+                            <span class="reward-icon">⭐</span>
+                            <span class="reward-value" id="expReward">+500</span>
+                            <span class="reward-label">经验</span>
+                        </div>
+                        <div class="reward-item">
+                            <span class="reward-icon">📜</span>
+                            <span class="reward-value" id="goldReward">+100</span>
+                            <span class="reward-label">金币</span>
+                        </div>
+                        <div class="reward-item">
+                            <span class="reward-icon">📦</span>
+                            <span class="reward-item-name" id="itemReward">阴阳玉佩</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn primary" id="continueAfterVictory">继续冒险</button>
+            </div>
+        </div>
+
+        <!-- 失败界面 -->
+        <div class="screen defeat-screen" id="defeatScreen" style="display: none;">
+            <div class="defeat-content">
+                <div class="defeat-icon">💀</div>
+                <h1>失败...</h1>
+                <p>阴阳失衡之兽太强了，你需要更努力地学习！</p>
+                <div class="defeat-stats">
+                    <p>获得的战斗经验：+<span id="defeatExp">100</span></p>
+                </div>
+                <div class="defeat-actions">
+                    <button class="btn primary" id="retryBattle">重新挑战</button>
+                    <button class="btn secondary" id="goToStudy">去学习</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 关卡完成界面 -->
+        <div class="screen level-complete-screen" id="levelCompleteScreen" style="display: none;">
+            <div class="level-complete-content">
+                <div class="complete-icon">🎊</div>
+                <h1>关卡完成！</h1>
+                <p>恭喜你完成了这个关卡！</p>
+
+                <div class="complete-rewards">
+                    <h3>获得奖励</h3>
+                    <div class="reward-row">
+                        <span class="reward-icon">⭐</span>
+                        <span class="reward-exp" id="completeExp">+100</span>
+                        <span>经验</span>
+                    </div>
+                    <div class="reward-row">
+                        <span class="reward-icon">📜</span>
+                        <span class="reward-gold" id="completeGold">+50</span>
+                        <span>金币</span>
+                    </div>
+                    <div class="reward-items" id="completeItems">
+                        <!-- 奖励物品 -->
+                    </div>
+                </div>
+
+                <button class="btn primary" onclick="showScreen('level-select')">返回关卡选择</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/rpg-game-enhanced.js"></script>
+</body>
+</html>

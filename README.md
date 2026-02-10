@@ -1,73 +1,298 @@
-# 光明中医 RPG - 关卡设计
+# 光明中医 RPG - 游戏化学习系统
 
-基于《中医概念入门》书籍设计的游戏化学习关卡。
+基于《中医概念入门》书籍设计的游戏化学习系统，包含完整的关卡数据和可运行的 Demo。
 
-## 项目说明
+## 📖 项目说明
 
-本项目为《光明中医 RPG》游戏提供关卡设计，所有内容忠实体现《中医概念入门》书籍内容，不进行虚构或扩展。
+本项目为《光明中医 RPG》游戏提供关卡设计和可运行的 Demo，所有内容忠实体现《中医概念入门》书籍内容，不进行虚构或扩展。
 
-## 技术架构
+## 🎮 Demo 在线预览
 
-- **前端**：纯JavaScript + localStorage（暂不需要后端）
-- **数据格式**：JSON
-- **关卡结构**：基于书籍章节设计
+[GitHub Pages](https://6830920.github.io/tcm-rpg-levels/)（待配置）
 
-## 关卡设计原则
+## 🚀 快速开始
 
-1. **忠实原文**：所有知识点来自《中医概念入门》，不虚构内容
-2. **循序渐进**：从基础概念到应用，难度逐步提升
-3. **游戏化**：学习→测验→应用 三段式
-4. **RPG元素**：场景、NPC、战斗、奖励
+### 本地运行
 
-## 项目结构
+1. **克隆仓库**
+   ```bash
+   git clone https://github.com/6830920/tcm-rpg-levels.git
+   cd tcm-rpg-levels
+   ```
+
+2. **直接打开 Demo**
+   ```bash
+   # 使用本地服务器（推荐）
+   python -m http.server 8000
+
+   # 或使用 Node.js
+   npx serve
+
+   # 或使用 PHP
+   php -S localhost:8000
+   ```
+
+3. **在浏览器中打开**
+   ```
+   http://localhost:8000/demo/
+   ```
+
+## 📁 项目结构
 
 ```
 tcm-rpg-levels/
-├── README.md                  # 项目说明
-├── levels/                    # 关卡数据
+├── README.md                  # 项目说明（本文件）
+├── demo/                      # 可运行的 Demo
+│   ├── index.html            # 主页面
+│   ├── css/                  # 样式文件
+│   │   ├── rpg-style.css
+│   │   └── enhanced-style.css
+│   └── js/                   # JavaScript 文件
+│       └── rpg-game-enhanced.js
+├── levels/                    # 关卡数据（JSON格式）
 │   ├── chapter-01/           # 第一章：阴阳平衡
 │   │   ├── level-01.json     # 场景1：阴阳之谷
 │   │   ├── level-02.json     # 场景2：平衡试炼场
 │   │   └── level-03.json     # 场景3：智慧殿堂
 │   ├── chapter-02/           # 第二章：天地自然
-│   └── ...
-├── data/                      # 原始数据（从书籍提取）
-│   ├── chapter-01-extract.md
-│   └── ...
-└── docs/                      # 设计文档
-    ├── design-principles.md
-    └── testing-guide.md
+│   ├── chapter-03/           # 第三章：中医人体观念
+│   └── chapter-04/           # 第四章：人体运行框架
 ```
 
-## 开发进度
+## 🎯 核心功能
+
+### 1. 关卡系统
+- 完整的关卡数据结构（JSON格式）
+- 支持章节、关卡、学习、测验、应用练习
+- 战斗系统集成
+- 奖励系统（经验、金币、物品）
+
+### 2. 学习流程
+1. **学习** - 阅读 NPC 讲解的知识点
+2. **测验** - 完成测验验证学习效果
+3. **应用** - 通过案例分析应用所学知识
+4. **战斗** - 击败敌人完成关卡（可选）
+
+### 3. 角色系统
+- 三种职业选择：卫气守护者、营气调理师、元气修炼者
+- 等级系统
+- 技能系统
+- 装备和背包
+
+## 💻 如何调用 Level
+
+### 方式一：在 Demo 中使用
+
+Demo 已经集成了完整的关卡加载系统，你可以直接运行：
+
+```javascript
+// 在 demo/js/rpg-game-enhanced.js 中已有实现
+async function loadLevelData(levelId) {
+    // levelId 格式：'chapter-01-level-01'
+    const response = await fetch(`../levels/${levelId.split('-')[1]}/${levelId.split('-')[3]}/${levelId}.json`);
+    const levelData = await response.json();
+    return levelData;
+}
+```
+
+### 方式二：在其他项目中集成
+
+如果你想在其他项目中使用这些关卡数据：
+
+```javascript
+// 1. 导入关卡数据（ES6模块）
+import levelData from './levels/chapter-01/level-01.json';
+
+// 2. 或使用 fetch（适用于浏览器）
+async function loadLevel(levelId) {
+    const response = await fetch(`./levels/${levelId}.json`);
+    const levelData = await response.json();
+    return levelData;
+}
+
+// 3. 使用关卡数据
+const level = await loadLevel('chapter-01-level-01');
+
+// 访问关卡信息
+console.log(level.title);        // 关卡标题
+console.log(level.npc);          // NPC 信息
+console.log(level.learning);     // 学习内容
+console.log(level.quiz);         // 测验
+console.log(level.battle);       // 战斗数据（如果有）
+console.log(level.rewards);      // 奖励
+```
+
+### 关卡数据结构示例
+
+```json
+{
+  "id": "chapter-01-level-01",
+  "chapter": "第一章",
+  "title": "阴阳平衡",
+  "level": 1,
+  "name": "阴阳之谷",
+  "description": "学习阴阳的基本概念和属性",
+
+  "npc": {
+    "name": "阴阳长老",
+    "avatar": "👴",
+    "introduction": "年轻人，欢迎来到阴阳之谷。"
+  },
+
+  "learning": {
+    "title": "阴阳基本概念",
+    "sections": [
+      {
+        "id": "1-1",
+        "title": "什么是阴阳平衡",
+        "content": "阴阳平衡是指...",
+        "keyPoints": ["重点1", "重点2"],
+        "example": {
+          "scenario": "示例场景",
+          "balancePoint": "平衡点"
+        }
+      }
+    ]
+  },
+
+  "quiz": {
+    "title": "阴阳概念测验",
+    "questions": [
+      {
+        "id": "q1-1",
+        "type": "single",
+        "question": "问题内容",
+        "options": ["A. 选项1", "B. 选项2"],
+        "answer": "A",
+        "explanation": "解释说明"
+      }
+    ],
+    "passingScore": 80
+  },
+
+  "application": {
+    "title": "应用练习",
+    "description": "练习说明",
+    "cases": [
+      {
+        "id": "app-1-1",
+        "scenario": "案例场景",
+        "choices": ["A. 选项1", "B. 选项2"],
+        "answer": "A",
+        "explanation": "解释"
+      }
+    ]
+  },
+
+  "battle": {
+    "title": "形气失衡之兽",
+    "enemy": {
+      "name": "敌人名称",
+      "avatar": "🎭",
+      "hp": 600,
+      "attack": 60,
+      "defense": 50
+    },
+    "skills": [...],
+    "strategy": [...]
+  },
+
+  "rewards": {
+    "exp": 250,
+    "gold": 120,
+    "items": ["物品名称"],
+    "unlockNext": true
+  },
+
+  "prerequisites": {
+    "level": 1,
+    "completedLevels": []
+  },
+
+  "metadata": {
+    "source": "《中医概念入门》第一章",
+    "difficulty": "入门",
+    "estimatedTime": 20,
+    "tags": ["标签1", "标签2"]
+  }
+}
+```
+
+## 🎨 技术架构
+
+- **前端框架**：纯 JavaScript（无依赖）
+- **样式**：CSS3（响应式设计）
+- **数据存储**：localStorage（游戏存档）
+- **数据格式**：JSON（关卡数据）
+- **浏览器兼容**：现代浏览器（Chrome、Firefox、Safari、Edge）
+
+## 📚 关卡设计原则
+
+1. **忠实原文**：所有知识点来自《中医概念入门》，不虚构内容
+2. **循序渐进**：从基础概念到应用，难度逐步提升
+3. **游戏化**：学习→测验→应用 三段式学习流程
+4. **RPG元素**：场景、NPC、战斗、奖励
+
+## 📅 开发进度
 
 - [x] 第一章：阴阳平衡（3个关卡）✅
 - [x] 第二章：天地自然（3个关卡）✅
-- [ ] 第三章：中医人体观念（设计中）
-- [ ] 第四章：人体运行框架
+- [x] 第三章：中医人体观念（8个关卡）✅
+- [x] 第四章：人体运行框架（2个关卡）✅
+- [x] Demo 完整实现 ✅
 - [ ] 第五章：人体部位划分
 - [ ] 第六章：人体平衡波动
 - [ ] 第七章：判断失衡情况
 - [ ] 附录 + 后记
 
-## 使用方法
+## 🔧 自定义开发
 
-关卡数据可直接集成到RPG Demo中：
+### 添加新关卡
+
+1. 在 `levels/` 目录下创建新的关卡 JSON 文件
+2. 按照上述数据结构填写内容
+3. 在 `demo/js/rpg-game-enhanced.js` 的 `loadLevelList` 函数中添加关卡
 
 ```javascript
-// 导入关卡数据
-import levelData from './levels/chapter-01/level-01.json';
-
-// 加载关卡
-loadLevel(levelData);
+const levels = [
+    { id: 'chapter-05-level-01', name: '新关卡名称', chapter: '第五章' },
+    // ...
+];
 ```
 
-## 许可证
+### 修改职业和技能
+
+编辑 `demo/js/rpg-game-enhanced.js` 中的 `gameData.professions`：
+
+```javascript
+professions: {
+    your_profession_id: {
+        id: 'your_profession_id',
+        name: '职业名称',
+        icon: '🎭',
+        desc: '职业描述',
+        stats: { hp: 100, mp: 50, attack: 30, defense: 40, speed: 25 },
+        skills: [
+            { id: 'skill_id', name: '技能名', icon: '⚡', mp: 20, damage: 40, desc: '描述' }
+        ]
+    }
+}
+```
+
+## 📝 许可证
 
 本项目基于《中医概念入门》（作者：李文强）设计，仅供学习使用。
 
-## 作者
+## 👥 作者
 
 - 关卡设计：OpenClaw AI
 - 原著：李文强
 - 网站：https://www.gmzyjx.com/books/rm
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📄 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
