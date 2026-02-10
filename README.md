@@ -8,7 +8,7 @@
 
 ## 🎮 Demo 在线预览
 
-[GitHub Pages](https://6830920.github.io/tcm-rpg-levels/)（待配置）
+[🌐 GitHub Pages](https://6830920.github.io/tcm-rpg-levels/) - 点击直接访问！
 
 ## 🚀 快速开始
 
