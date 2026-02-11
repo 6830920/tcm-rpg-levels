@@ -554,14 +554,20 @@ function initGame() {
 }
 
 function bindEvents() {
+    // 安全添加事件监听器
+    const safeAddListener = (id, event, handler) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener(event, handler);
+    };
+
     // 启动界面
-    document.getElementById('newGameBtn').addEventListener('click', () => showScreen('create'));
-    document.getElementById('continueBtn').addEventListener('click', continueGame);
-    document.getElementById('settingsBtn').addEventListener('click', showSettings);
+    safeAddListener('newGameBtn', 'click', () => showScreen('create'));
+    safeAddListener('continueBtn', 'click', continueGame);
+    safeAddListener('settingsBtn', 'click', showSettings);
 
     // 角色创建
-    document.getElementById('backToStart').addEventListener('click', () => showScreen('start'));
-    document.getElementById('startAdventureBtn').addEventListener('click', createCharacter);
+    safeAddListener('backToStart', 'click', () => showScreen('start'));
+    safeAddListener('startAdventureBtn', 'click', createCharacter);
 
     // 职业选择
     document.querySelectorAll('.profession-card').forEach(card => {
@@ -580,28 +586,28 @@ function bindEvents() {
     });
 
     // 关卡界面
-    document.getElementById('startLearningBtn').addEventListener('click', startLearning);
-    document.getElementById('nextSectionBtn').addEventListener('click', nextSection);
+    safeAddListener('startLearningBtn', 'click', startLearning);
+    safeAddListener('nextSectionBtn', 'click', nextSection);
 
     // 完成关卡
-    document.getElementById('backToMenuBtn').addEventListener('click', () => showScreen('start'));
+    safeAddListener('backToMenuBtn', 'click', () => showScreen('start'));
 
-    // 游戏界面按钮
-    document.getElementById('menuBtn').addEventListener('click', toggleGameMenu);
-    document.getElementById('inventoryBtn').addEventListener('click', showInventory);
-    document.getElementById('skillsBtn').addEventListener('click', showSkills);
+    // 游戏界面按钮（如果存在）
+    safeAddListener('menuBtn', 'click', toggleGameMenu);
+    safeAddListener('inventoryBtn', 'click', showInventory);
+    safeAddListener('skillsBtn', 'click', showSkills);
 
     // 战斗界面
     document.querySelectorAll('.action-btn').forEach(btn => {
         btn.addEventListener('click', (e) => handleBattleAction(e.target.dataset.action));
     });
 
-    document.getElementById('continueAfterVictory').addEventListener('click', () => {
+    safeAddListener('continueAfterVictory', 'click', () => {
         showScreen('start');
     });
 
-    document.getElementById('retryBattle').addEventListener('click', () => startBattle());
-    document.getElementById('goToStudy').addEventListener('click', () => {
+    safeAddListener('retryBattle', 'click', () => startBattle());
+    safeAddListener('goToStudy', 'click', () => {
         showScreen('learning');
     });
 }
