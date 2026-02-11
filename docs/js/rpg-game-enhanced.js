@@ -98,7 +98,12 @@ async function loadLevelData(levelId) {
     }
 
     try {
-        const response = await fetch(`../levels/${levelId.split('-')[1]}/${levelId.split('-')[3]}/${levelId}.json`);
+        // 构建正确的路径：../levels/chapter-XX/level-XX.json
+        // levelId格式：chapter-XX-level-XX
+        const parts = levelId.split('-');
+        const chapter = `chapter-${parts[1]}`;
+        const levelFile = `level-${parts[3]}.json`;
+        const response = await fetch(`../levels/${chapter}/${levelFile}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -692,7 +697,12 @@ function createCharacter() {
         equipment: profession.startingEquipment,
         inventory: [],
         completedLevels: [],
-        currentScene: 'start'
+        currentScene: 'start',
+        stats: {
+            battlesWon: 0,
+            totalDamage: 0,
+            totalHealing: 0
+        }
     };
 
     gameState.player.inventory.push(gameData.items['本草药包']);
@@ -970,18 +980,29 @@ function defeat() {
 // ==================== 辅助函数 ====================
 
 function initGameScreen() {
+    // 检查gameScreen是否存在，如果不存在则不做任何操作
+    const gameScreen = document.getElementById('gameScreen');
+    if (!gameScreen) return;
+
     updatePlayerStats();
 }
 
 function updatePlayerStats() {
     const player = gameState.player;
-    document.getElementById('playerAvatar').textContent = player.avatar;
-    document.getElementById('playerName').textContent = player.name;
-    document.getElementById('playerTitle').textContent = `Lv.${player.level} ${player.professionName}`;
-    document.getElementById('playerHP').textContent = player.hp;
-    document.getElementById('playerMP').textContent = player.mp;
-    document.getElementById('playerLevel').textContent = player.level;
-    document.getElementById('playerExp').textContent = player.exp;
+
+    // 安全更新玩家状态（如果元素存在）
+    const updateIfExist = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    };
+
+    updateIfExist('playerAvatar', player.avatar);
+    updateIfExist('playerName', player.name);
+    updateIfExist('playerTitle', `Lv.${player.level} ${player.professionName}`);
+    updateIfExist('playerHP', player.hp);
+    updateIfExist('playerMP', player.mp);
+    updateIfExist('playerLevel', player.level);
+    updateIfExist('playerExp', player.exp);
 }
 
 function saveGame() {
