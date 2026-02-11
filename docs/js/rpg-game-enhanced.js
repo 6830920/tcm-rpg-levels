@@ -132,6 +132,7 @@ async function startLevel(levelId) {
                     alert(`需要先完成前置关卡！`);
                     return;
                 }
+            }
         }
     }
 
