@@ -574,22 +574,6 @@ function bindEvents() {
     safeAddListener('backToStart', 'click', () => showScreen('start'));
     safeAddListener('startAdventureBtn', 'click', createCharacter);
 
-    // 职业选择
-    document.querySelectorAll('.profession-card').forEach(card => {
-        card.addEventListener('click', () => {
-            document.querySelectorAll('.profession-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-        });
-    });
-
-    // 头像选择
-    document.querySelectorAll('.avatar-option').forEach(opt => {
-        opt.addEventListener('click', () => {
-            document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
-            opt.classList.add('selected');
-        });
-    });
-
     // 关卡界面
     safeAddListener('startLearningBtn', 'click', startLearning);
     safeAddListener('nextSectionBtn', 'click', nextSection);
@@ -655,6 +639,11 @@ function showScreen(screenName) {
 
     if (screenName === 'game') {
         initGameScreen();
+    }
+
+    // 如果显示角色创建界面，绑定职业和头像选择事件
+    if (screenName === 'create') {
+        bindCharacterEvents();
     }
 }
 
@@ -978,6 +967,25 @@ function defeat() {
 }
 
 // ==================== 辅助函数 ====================
+
+// 动态绑定职业和头像选择事件（当显示角色创建界面时）
+function bindCharacterEvents() {
+    // 职业选择
+    document.querySelectorAll('.profession-card').forEach(card => {
+        card.onclick = () => {
+            document.querySelectorAll('.profession-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        };
+    });
+
+    // 头像选择
+    document.querySelectorAll('.avatar-option').forEach(opt => {
+        opt.onclick = () => {
+            document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+        };
+    });
+}
 
 function initGameScreen() {
     // 检查gameScreen是否存在，如果不存在则不做任何操作
