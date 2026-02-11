@@ -617,6 +617,7 @@ function showScreen(screenName) {
     const screenIdMap = {
         'start': 'startScreen',
         'create': 'characterCreateScreen',
+        'level-select': 'levelSelectScreen',
         'game': 'gameScreen',
         'battle': 'battleScreen',
         'victory': 'victoryScreen',
@@ -753,10 +754,20 @@ async function loadLevelList() {
                         <span class="level-chapter">${level.chapter}</span>
                         <span class="level-name">${level.name}</span>
                     </div>
-                    <button class="level-status-btn" onclick="startLevel('${level.id}')">${statusText}</button>
+                    <button class="level-status-btn" data-level-id="${level.id}">${statusText}</button>
                 </div>
             `;
         }).join('');
+
+        // 动态绑定关卡按钮点击事件
+        levelListEl.querySelectorAll('.level-status-btn').forEach(btn => {
+            btn.onclick = () => {
+                const levelId = btn.dataset.levelId;
+                if (levelId) {
+                    startLevel(levelId);
+                }
+            };
+        });
 
     } catch (error) {
         console.error('加载关卡列表失败:', error);
