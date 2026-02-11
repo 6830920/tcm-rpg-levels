@@ -98,12 +98,13 @@ async function loadLevelData(levelId) {
     }
 
     try {
-        // 构建正确的路径：../levels/chapter-XX/level-XX.json
+        // 构建正确的路径：../../levels/chapter-XX/level-XX.json
+        // 从demo/js/rpg-game-enhanced.js需要往上两级到达项目根目录
         // levelId格式：chapter-XX-level-XX
         const parts = levelId.split('-');
         const chapter = `chapter-${parts[1]}`;
         const levelFile = `level-${parts[3]}.json`;
-        const response = await fetch(`../levels/${chapter}/${levelFile}`);
+        const response = await fetch(`../../levels/${chapter}/${levelFile}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -112,7 +113,7 @@ async function loadLevelData(levelId) {
         return levelData;
     } catch (error) {
         console.error('加载关卡失败:', error);
-        alert(`加载关卡失败: ${levelId}`);
+        alert(`加载关卡失败: ${levelId}\n错误详情: ${error.message}`);
         return null;
     }
 }
@@ -538,12 +539,15 @@ function startBattle() {
 // ==================== 初始化和事件绑定 ====================
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded fired');
     bindEvents();
     initGame();
 });
 
 function initGame() {
+    console.log('initGame called');
     const savedData = localStorage.getItem('tcm_rpg_save');
+    console.log('Saved data:', savedData ? 'exists' : 'not exists');
 
     if (savedData) {
         try {
@@ -559,14 +563,24 @@ function initGame() {
 }
 
 function bindEvents() {
+    console.log('bindEvents called');
+
     // 安全添加事件监听器
     const safeAddListener = (id, event, handler) => {
         const el = document.getElementById(id);
-        if (el) el.addEventListener(event, handler);
+        if (el) {
+            console.log('Binding event:', id, event);
+            el.addEventListener(event, handler);
+        } else {
+            console.error('Element not found:', id);
+        }
     };
 
     // 启动界面
-    safeAddListener('newGameBtn', 'click', () => showScreen('create'));
+    safeAddListener('newGameBtn', 'click', () => {
+        console.log('newGameBtn clicked');
+        showScreen('create');
+    });
     safeAddListener('continueBtn', 'click', continueGame);
     safeAddListener('settingsBtn', 'click', showSettings);
 
@@ -577,6 +591,10 @@ function bindEvents() {
     // 关卡界面
     safeAddListener('startLearningBtn', 'click', startLearning);
     safeAddListener('nextSectionBtn', 'click', nextSection);
+
+    // 新增：关卡相关按钮
+    safeAddListener('backFromIntro', 'click', () => showScreen('level-select'));
+    safeAddListener('backToLevelSelectFromComplete', 'click', () => showScreen('level-select'));
 
     // 完成关卡
     safeAddListener('backToMenuBtn', 'click', () => showScreen('start'));
@@ -604,10 +622,12 @@ function bindEvents() {
 // ==================== 屏幕显示 ====================
 
 function showScreen(screenName) {
+    console.log('showScreen called with:', screenName);
     gameState.currentScreen = screenName;
 
     // 隐藏所有屏幕
     const screens = document.querySelectorAll('.screen');
+    console.log('Found screens:', screens.length);
     screens.forEach(s => {
         s.style.display = 'none';
         s.classList.add('hidden');
@@ -633,9 +653,15 @@ function showScreen(screenName) {
     const targetScreenId = screenIdMap[screenName] || (screenName + 'Screen');
     const screen = document.getElementById(targetScreenId);
 
+    console.log('Target screen ID:', targetScreenId);
+    console.log('Target screen element:', screen);
+
     if (screen) {
         screen.style.display = 'flex';
         screen.classList.remove('hidden');
+        console.log('Screen displayed successfully');
+    } else {
+        console.error('Screen not found:', targetScreenId);
     }
 
     if (screenName === 'game') {

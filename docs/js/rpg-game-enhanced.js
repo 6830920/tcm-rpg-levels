@@ -98,12 +98,13 @@ async function loadLevelData(levelId) {
     }
 
     try {
-        // 构建正确的路径：../levels/chapter-XX/level-XX.json
+        // 构建正确的路径：../../levels/chapter-XX/level-XX.json
+        // 从docs/js/rpg-game-enhanced.js需要往上两级到达项目根目录
         // levelId格式：chapter-XX-level-XX
         const parts = levelId.split('-');
         const chapter = `chapter-${parts[1]}`;
         const levelFile = `level-${parts[3]}.json`;
-        const response = await fetch(`../levels/${chapter}/${levelFile}`);
+        const response = await fetch(`../../levels/${chapter}/${levelFile}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -112,7 +113,7 @@ async function loadLevelData(levelId) {
         return levelData;
     } catch (error) {
         console.error('加载关卡失败:', error);
-        alert(`加载关卡失败: ${levelId}`);
+        alert(`加载关卡失败: ${levelId}\n错误详情: ${error.message}`);
         return null;
     }
 }
